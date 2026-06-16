@@ -1,0 +1,32 @@
+# -------------------------- 模型配置 --------------------------
+network: CTNet  # 模型名称改为CTNet
+network_args:
+  n_classes: 10        # 分类类别数（根据实际任务调整：笔画5/拼音6/字母26/混合37）
+  number_channel: 32   # 核心参数：适配32通道输入
+  heads: 2             # 注意力头数（适配emb_size=16，16%2=0）
+  emb_size: 40         # 嵌入维度（适配32通道，16更轻量化）
+  depth: 6             # Transformer编码器层数（CTNet经典配置）
+  eeg1_f1: 8           # 时间卷积核数（适配1000采样点）
+  eeg1_kernel_size: 64 # 时间卷积核大小（覆盖64个采样点的时序特征）
+  eeg1_D: 2            # 深度可分离卷积扩张系数
+  eeg1_pooling_size1: 8 # 第一层时间池化核大小
+  eeg1_pooling_size2: 8 # 第二层时间池化核大小
+  eeg1_dropout_rate: 0.25 # Dropout率（降低过拟合，适配小样本）
+  flatten_eeg1: 600    # 分类头输入维度（15×16=240，seq_len×emb_size）
+
+# -------------------------- 数据配置 --------------------------
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_English  # 数据路径不变
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_English  # 输出路径不变
+
+# -------------------------- 训练配置 --------------------------
+preferred_device: gpu     # 优先GPU
+batch_size: 32            # 适配CTNet的批次大小（32通道建议16，避免OOM）
+nGPU: 0                   # GPU数量（自动选择）
+random_seed: 0            # 随机种子（保证可复现）
+epochs: 100               # 训练轮次（可根据效果调整）
+lr: 0.0001                # 学习率（CTNet适配该值）
+weight_decay: 1e-5        # L2正则化（防止过拟合）
+seq_len: 61               # 保留原参数（不影响CTNet，仅兼容数据加载逻辑）
+label_smoothing: 0.01     # 轻量标签平滑（提升泛化性）
+k_folds: 5                # 5折交叉验证
+device: cuda:0            # 指定GPU设备

@@ -1,0 +1,32 @@
+# ===================== FBCNet 配置文件 Hand_Writing_FBCNet.yaml =====================
+# 模型名称
+network: FBCNetModel
+
+# 模型超参（完全对齐你Jupyter初始化参数）
+network_args:
+  nChan: 32
+  nTime: 1000
+  nClass: 10
+  nBands: 10
+  m: 16
+  temporalLayer: "LogVarLayer"
+  strideFactor: 4
+  doWeightNorm: true
+
+# 数据路径
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_English
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_English
+
+# 训练全局超参（与你给出的训练参数一一对应）
+preferred_device: gpu
+device: cuda:0
+batch_size: 32
+lr: 0.0001
+weight_decay: 0.1
+epochs: 1000
+k_folds: 5
+
+# 通用固定配置
+nGPU: 0
+random_seed: 0
+label_smoothing: 0.01

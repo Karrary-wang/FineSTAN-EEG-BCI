@@ -1,0 +1,24 @@
+# -------------------------- 模型配置 --------------------------
+network: EEGConformer  # 改为EEGConformer模型名称
+network_args:
+  emb_size: 40         # 嵌入维度（适配32通道，略大于通道数）
+  depth: 4             # Transformer编码器层数（从TransNet的4层复用，降低复杂度）
+  n_classes: 10        # 分类类别数（手写任务：笔画5类+拼音6类=11？需确认实际标签数，暂保留10）
+  num_heads: 8         # 多头注意力头数（40%8=0，合法；替换原10头，适配32通道）
+  drop_p: 0.3          # 注意力层Dropout（复用TransNet的0.5）
+  forward_expansion: 4 # 前馈网络扩张系数（复用TransNet的16，隐藏层=40*16=640）
+  input_channels: 32    # 新增：适配32通道输入（需同步修改模型代码）
+
+# -------------------------- 数据配置 --------------------------
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_English  # 保持原路径
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_English  # 保持原输出路径
+
+# -------------------------- 训练配置 --------------------------
+preferred_device: gpu     # 优先GPU
+batch_size: 32            # 复用TransNet的批次大小（若OOM可改为32）
+nGPU: 0                   # GPU数量（自动选择）
+random_seed: 0            # 随机种子（可复现）
+epochs: 100           # 固定训练轮次
+lr: 0.0001               # 学习率（EEGConformer适配该值）
+weight_decay: 1e-5        # L2正则化（从4e-2下调，避免过正则化）
+seq_len: 61

@@ -1,0 +1,32 @@
+# -------------------------- 模型配置 --------------------------
+network: EEGNetModel  # 对应PyCharm中模型类名
+network_args:
+  classes: 10         # 分类数，和任务对齐（同CTNet的n_classes）
+  chans: 32           # 电极通道数，固定32
+  time_points: 1000   # 单样本时间采样点，固定1000
+  temp_kernel: 25     # 时域卷积核大小
+  f1: 8               # 第一层卷积通道数
+  f2: 16              # 可分离卷积通道数
+  d: 2                # 深度卷积扩张系数
+  pk1: 16             # 第一级池化核大小
+  pk2: 8              # 第二级池化核大小
+  dropout_rate: 0.5   # Dropout概率
+  max_norm1: 1       # 深度卷积权重最大范数约束
+  max_norm2: 1       # 全连接层权重最大范数约束
+
+# -------------------------- 数据配置 --------------------------
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_English
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_English
+
+# -------------------------- 训练配置（完全沿用原有训练超参，无需改动） --------------------------
+preferred_device: gpu
+batch_size: 32
+nGPU: 0
+random_seed: 0
+epochs: 100
+lr: 0.0001
+weight_decay: 1e-1
+seq_len: 61
+label_smoothing: 0.01
+k_folds: 5
+device: cuda:0

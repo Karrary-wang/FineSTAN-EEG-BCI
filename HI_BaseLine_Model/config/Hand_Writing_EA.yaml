@@ -1,0 +1,28 @@
+# -------------------------- 模型配置 --------------------------
+network: EEGEA  # 模型名称改为EEGEA（和训练代码中config['network']一致）
+network_args:
+  chans: 32          # 核心参数：EEG通道数（固定32，匹配你的数据集）
+  samples: 1000      # 核心参数：每个试次的采样点数（固定1000）
+  multiple: 9        # 卷积通道扩张系数（模型固定参数，不可修改）
+  num_classes: 6   # 分类类别数（和Conformer一致，手写想象10类）
+  dataset: handwriting  # 数据集类型（适配模型内的分支逻辑）
+  pool_kernels: [50, 100, 200]  # 多尺度池化核（适配1000采样点的时间维度）
+
+# -------------------------- 数据配置 --------------------------
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_Pinyin  # 保持原路径不变
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_Pinyin  # 保持原输出路径不变
+
+# -------------------------- 训练配置 --------------------------
+preferred_device: gpu     # 优先GPU（和Conformer一致）
+batch_size: 32            # 批次大小（可保持32，EEGEA更轻量化，不会OOM）
+nGPU: 0                   # GPU数量（自动选择，和Conformer一致）
+random_seed: 0            # 随机种子（保持0，确保实验可复现）
+epochs: 100               # 固定训练轮次（和Conformer一致，便于对比）
+lr: 0.0001                # 学习率（EEGEA适配该值，无需调整）
+weight_decay: 1e-5        # L2正则化（从Conformer复用，避免过拟合）
+seq_len: 61               # 兼容原配置字段（EEGEA不使用该参数，保留不影响）
+
+# -------------------------- 额外适配配置 --------------------------
+k_folds: 5                # 5折交叉验证（和训练代码逻辑一致）
+label_smoothing: 0.01     # 标签平滑（和训练代码中loss_func参数匹配）
+device: cuda:0            # 训练设备（和训练代码中config['device']一致）

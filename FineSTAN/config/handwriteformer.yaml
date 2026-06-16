@@ -1,0 +1,40 @@
+# ====================== 模型核心配置 ======================
+network: FineSTAN  # 对应模型类名称，区分不同版本
+network_args:
+  num_classes: 6                # BCI42数据集：手写类别数（0~4共5类+背景/空类=6类）
+  num_samples: 1000             # EEG时序采样点总数（每个试次的时间序列长度）
+  num_channels: 32              # EEG通道数（脑电电极数量）
+  embed_dim: 32                 # 特征嵌入维度（需满足 num_heads 整除，32%8=0）
+  pool_size: 180                # 双池化核尺寸（时序窗口大小）
+  pool_stride: 30               # 双池化步长（控制输出时序长度）
+  num_heads: 8                  # 多头注意力头数
+  fc_ratio: 16                  # Transformer FFN层隐藏层扩展比
+  depth: 4                      # Transformer编码器层数
+  attn_drop: 0.5                # 多头注意力层dropout率
+  fc_drop: 0.5                  # FFN层dropout率
+  classify_drop: 0.5            # 分类层前dropout率
+  top_k_channels: 28            # V3模型选中的核心运动区通道数
+  # ---------------------- 局部时序注意力参数 ----------------------
+  window_size: 225             # 局部注意力窗口大小（建议为num_samples//10）
+  stride: 112                   # 局部注意力滑动步长（建议为window_size//2）
+
+# ====================== 数据配置 ======================
+data_path: D:/EEG_HandWriting_Project_Code/FineSTAN/dataset/bci_handwriting_data_Pinyin  # _Pinyin  _English 数据集根路径 FineSTAN
+out_folder: D:/EEG_HandWriting_Project_Code/FineSTAN/output/bci_handwriting_data_Pinyin/hyperparam_Window  # 实验结果保存路径
+random_seed: 0                  # 全局随机种子（保证实验可复现）
+
+# ====================== 训练配置 ======================
+preferred_device: gpu           # 优先设备：gpu/cpu
+batch_size: 64                  # 训练批次大小（适配GPU显存，2的幂次）
+nGPU: 0                         # GPU设备编号（单GPU填0，多GPU填列表如[0,1]）
+epochs: 100                     # 训练总轮数
+lr: 0.0002                      # 初始学习率（Adam优化器常用范围：1e-4 ~ 1e-2）
+weight_decay: 1e-2           # 权重衰减（L2正则化，缓解过拟合）EEL-HI 1e-4 SV-HI 1e-3 CCS-HI 1e-2
+label_smoothing: 0.05           # 标签平滑（补充至训练配置，与训练代码匹配）
+k_folds: 5                    # K折交叉验证折数（补充至配置，与训练代码默认值一致）
+
+# ====================== 数据增强配置（预留） ======================
+use_augmentation: true          # 是否启用EEG数据增强（高斯噪声）
+aug_noise_std: 0.02             # 高斯噪声强度（EEG推荐范围：0.005 ~ 0.02）
+aug_clip_range: [-100, 100]     # EEG幅值裁剪范围（模拟生理范围）
+

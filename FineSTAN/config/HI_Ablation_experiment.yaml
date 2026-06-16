@@ -1,0 +1,40 @@
+# ====================== 模型核心配置 ======================
+network: FineImagNet_Baseline #  消融1：移除 ACSM (FineImagNet_wo_ACSM)  FineImagNet_wo_MSTCM  _SegSTA   FineImagNet_wo_ACSM
+network_args:
+  num_classes: 10             # BCI42数据集：手写类别数（0~4共5类+背景/空类=6类）
+  num_samples: 1000             # EEG时序采样点总数（每个试次的时间序列长度）
+  num_channels: 32              # EEG通道数（脑电电极数量）
+  embed_dim: 32                 # 特征嵌入维度（需满足 num_heads 整除，32%8=0）
+  pool_size: 180                # 双池化核尺寸（时序窗口大小）
+  pool_stride: 30               # 双池化步长（控制输出时序长度）
+  num_heads: 8                  # 多头注意力头数
+  fc_ratio: 16                  # Transformer FFN层隐藏层扩展比
+  depth: 4                      # Transformer编码器层数
+  attn_drop: 0.5                # 多头注意力层dropout率
+  fc_drop: 0.5                  # FFN层dropout率
+  classify_drop: 0.5            # 分类层前dropout率
+  # top_k_channels: 16            # 消融2：恢复通道选择（保留ACSM）
+  # 消融1：删除 top_k_channels（无通道筛选）
+  # ---------------------- 局部时序注意力参数 ----------------------
+  #window_size: 100              # 局部注意力窗口大小（建议为num_samples//10）
+  #stride: 50                    # 局部注意力滑动步长（建议为window_size//2）
+
+# ====================== 数据配置 ======================
+data_path: D:/EEG_HandWriting_Project_Code/FineSTAN/dataset/bci_handwriting_data_English  # EEG-TransNet-main
+out_folder: D:/EEG_HandWriting_Project_Code/FineSTAN/output/bci_handwriting_data_English/Ablation_Baseline #  _wo_ACSM 输出路径改名，避免覆盖
+random_seed: 0                  # 全局随机种子（保证实验可复现）
+
+# ====================== 训练配置 ======================
+preferred_device: gpu           # 优先设备：gpu/cpu
+batch_size: 64                  # 训练批次大小（适配GPU显存，2的幂次）
+nGPU: 0                         # GPU设备编号（单GPU填0，多GPU填列表如[0,1]）
+epochs: 100                     # 训练总轮数
+lr: 0.0002                      # 初始学习率（Adam优化器常用范围：1e-4 ~ 2e-4）
+weight_decay: 1e-4              #  CCSHI 1e-3 ELHI 1e-4 SVHI 1e-2
+label_smoothing: 0.05           # 标签平滑
+k_folds: 5                    # K折交叉验证
+
+# ====================== 数据增强配置（预留） ======================
+use_augmentation: true
+aug_noise_std: 0.02
+aug_clip_range: [-100, 100]

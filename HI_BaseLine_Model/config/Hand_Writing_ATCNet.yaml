@@ -1,0 +1,25 @@
+network: ATCNet
+
+network_args:
+  n_classes: 6
+  in_chans: 32
+  F1: 16
+  D: 2
+  kernLength: 64
+  poolSize1: 8
+  poolSize2: 7
+  num_heads: 2
+  depth: 2
+  n_windows: 5
+  dropout: 0.2
+
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_Pinyin
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_Pinyin
+
+device: cuda:0
+batch_size: 32
+random_seed: 42
+lr: 0.001
+weight_decay: 0.0001
+label_smoothing: 0.01
+k_folds: 5

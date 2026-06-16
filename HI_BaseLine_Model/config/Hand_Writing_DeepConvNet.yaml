@@ -1,0 +1,26 @@
+# -------------------------- 模型配置 --------------------------
+network: DeepConvNet
+network_args:
+  classes: 10
+  chans: 32
+  time_points: 1000
+  batch_norm: true
+  batch_norm_alpha: 0.1
+  kernal: 10
+
+# -------------------------- 数据配置 --------------------------
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_English
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_English
+
+# -------------------------- 训练配置（与原有训练超参保持一致） --------------------------
+preferred_device: gpu
+batch_size: 32
+nGPU: 0
+random_seed: 0
+epochs: 100
+lr: 0.0001
+weight_decay: 1e-1
+seq_len: 61
+label_smoothing: 0.01
+k_folds: 5
+device: cuda:0

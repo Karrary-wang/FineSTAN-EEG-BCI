@@ -1,0 +1,28 @@
+# -------------------------- 模型配置（MCTD专属） --------------------------
+network: MCTD  # 模型名称：多尺度卷积Transformer（MCTD）
+network_args:
+  n_classes: 5          # 分类类别数：英文手写想象10分类（0-9数字）
+  in_chans: 32           # 核心参数：适配32通道EEG电极输入
+  emb_size: 40           # 特征嵌入维度：匹配ShallowNet 40个卷积核（MCTD最优配置）
+  depth: 6               # Transformer编码器层数：6层（和CTNet保持一致，保证对比公平性）
+  # 可选扩展参数（如需精细化调优可添加）
+  # num_heads: 8          # 注意力头数：40/8=5整除（默认8，无需修改）
+  # drop_p: 0.5           # 注意力dropout率：0.5（默认值，平衡拟合与泛化）
+  # forward_expansion: 4  # 前馈网络扩张系数：4（默认值）
+
+# -------------------------- 数据配置 --------------------------
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data  # 英文手写想象数据集路径
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data  # 模型输出/日志保存路径
+
+# -------------------------- 训练配置（优化版） --------------------------
+preferred_device: gpu     # 优先使用GPU训练
+batch_size: 32            # 批次大小：32（32通道适配，显存不足可改为16）
+nGPU: 0                   # GPU数量：0表示自动选择可用GPU
+random_seed: 0            # 随机种子：0（保证实验可复现）
+epochs: 100               # 训练轮次：100轮（和CTNet一致，便于对比）
+lr: 0.0001                # 学习率：1e-4（MCTD最优初始学习率）
+weight_decay: 1e-4        # L2正则化：1e-4（优化后，适配小样本防止过拟合）
+seq_len: 61               # 兼容参数：不影响MCTD，仅适配数据加载逻辑
+label_smoothing: 0.01     # 标签平滑：0.01（轻量平滑，提升泛化性）
+k_folds: 5                # 交叉验证：5折（行业标准，平衡训练/验证数据）
+device: cuda:0            # 指定GPU设备：cuda:0（单卡训练）

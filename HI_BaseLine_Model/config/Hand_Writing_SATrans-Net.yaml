@@ -1,0 +1,26 @@
+network: SATransNet
+
+network_args:
+  n_classes: 10
+  heads: 2
+  emb_size: 16
+  depth: 1
+  eeg1_f1: 16
+  eeg1_kernel_size: 64
+  eeg1_D: 2
+  eeg1_pooling_size1: 10
+  eeg1_pooling_size2: 4
+  eeg1_dropout_rate: 0.1
+  eeg1_number_channel: 32
+  flatten_eeg1: 400
+
+data_path: F:/EEG-TransNet-main/dataset/bci_handwriting_data_English
+out_folder: F:/EEG-TransNet-main/output/bci_handwriting_data_English
+
+device: cuda:0
+batch_size: 16
+random_seed: 42
+lr: 0.0005
+weight_decay: 0.0001
+label_smoothing: 0.0
+k_folds: 5
